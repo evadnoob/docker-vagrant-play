@@ -1,0 +1,81 @@
+Getting Started
+---------------
+
+There are two options for running this project: 1) using docker with
+boot2docker, or 2) using vagrant alone without boot2docker.
+
+Prerequisites
+-------------
+The only prerequisite is Vagrant 1.6 installed on your host, assuming Mac OSX as the host environment.
+
+Getting Started with Vagrant
+----------------------------
+Simply run vagrant up, then wait for the docker container to be built in the virtual machine.
+
+Once the provisioning is done, and docker container is running in the
+vm you should be able to run:
+
+curl http://localhost:9400/api/timeofday
+
+or:
+
+curl -v -v 'localhost:9400/api/timeofday?timezone=PDT'
+
+
+A successfull response will look like:
+{"time":"June 16, 2014 7:14:07 AM PDT","timeIso":"2014-06-16T07:14:07.970-07:00"}
+
+
+Building from scratch can be a bit slow, on the vm. Subsequent runs
+will be speedy, but the initial build using the guest vm is slow when
+running sbt, and re-downloading dependencies etc. Prebuilding on your
+host vm is an option that makes the 'vagrant up' process much faster,
+but be patient when you encounter the "Loading project definition from
+/vagrant/project" message, it will complete, it just takes a while.
+In order to make the build process faster, there is a check in the
+Dockerfile for a pre-existing "build", if it exists, no sbt commands
+are run on the guest vm.
+
+If you decide to pre-build, just run:
+sbt clean compile stage
+
+Once the compile and stage commands are done, run:
+vagrant up
+
+
+Getting Started Without Vagrant(using docker and boot2docker)
+-------------------------------------------------------------
+
+The fastest way to get going on Mac OSX is to use boot2docker and
+docker 1.0.  Using vagrant with the docker provider is very slow(and
+not quite reliable, in my experience), and most of the time runs into
+some problem.  However, using the latest docker 1.0, and boot2docker,
+this workflow is fast and works reliably.
+
+
+Example workflow with boot2docker:
+# create a boot2docker vm with lots of memory, the default b2b vm has 1024MB, just too small to run a jvm.
+boot2docker --memory=3072 init
+
+# start the vm
+boot2docker up
+
+# build an image from Dockerfile
+docker build -t evadnoob/time-in-timezone .
+
+# run the built image
+docker run -d -p 9000:9000 evadnoob/time-in-timezone
+
+# get the ip
+boot2docker ip
+
+The VM's Host only interface IP address is: 192.168.59.105
+
+# Example:
+curl http://192.168.59.105:9000/api/timeofday
+{"time":"June 15, 2014 12:07:28 PM EDT","timeIso":"2014-06-15T12:07:28.872-04:00"}%
+
+
+
+
+

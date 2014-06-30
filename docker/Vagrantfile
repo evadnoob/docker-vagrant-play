@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  
+  # config.vm.box = "chef/centos-6.5"
+  # config.vm.network :forwarded_port, guest: 9000, host: 9400
+  
+  # vb.customize ["modifyvm", :id, "--memory", "2048"] 
+  
+  # #config.vm.provision "shell", path: "provision.sh"
+  # config.vm.provision "shell", inline: "for x in `pgrep -f sbt-launch`; do kill -9 $x; done"
+  # config.vm.provision "shell", inline: "cd /vagrant && /opt/sbt/bin/sbt start", privileged: false
+
+  #  ------------ start alternate config here ------------
+
+  config.vm.box = "precise64"
+  config.vm.provision = "docker"
+  #config.vm.provision = "shell", inline: "ps aux | grep 'sshd:' | awk '{print $2} | xargs kill"
+  
+  # config.vm.network :forwarded_port, guest: 9000, host: 9400
+  
+  # vb.customize ["modifyvm", :id, "--memory", "2048"] 
+  
+  # #config.vm.provision "shell", path: "provision.sh"
+  # config.vm.provision "shell", inline: "for x in `pgrep -f sbt-launch`; do kill -9 $x; done"
+  # config.vm.provision "shell", inline: "cd /vagrant && /opt/sbt/bin/sbt start", privileged: false
+  
+  
+end
